@@ -1,0 +1,65 @@
+/*------------------
+   teamInfo modal start
+---------------------*/
+
+.teamInfo_modal {
+    position: absolute;
+    width: 100%;
+    height: 120%;
+    background: rgba(0, 0, 0, 0.0);
+    top: 0px;
+    left: 0px;
+    z-index: 10;
+    display: none;
+}
+
+.teamInfo_modal_content {
+    width: 60%;
+    height: 60%;
+    background-color: black;
+    opacity: 0.88;
+    border-radius: 10px;
+    position: relative;
+    margin: auto;
+    top: 20%;
+}
+.teamInfo_tab {
+    border: 1px solid black;
+    margin: auto;
+    width: 850px;
+    height: 45%;
+}
+.teamInfo_write {
+    height: 145px;
+    resize: none;
+    width: 750px;
+    margin-left: 80px;
+    border: 1px solid #fff;
+    box-shadow: 1px 2px 7px -4px grey;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+.bi bi-pencil-square {
+    float: right;
+}
+/*#loginSet img, #signIn {*/
+/*  cursor: pointer;*/
+/*}*/
+
+/*#signIn {*/
+/*  font-size: 14px;*/
+/*}*/
+.closeBtn {
+    margin-top: 90%;
+    margin-left: 90%;
+    box-shadow: 1px 2px 7px -4px #ffb320;
+}
+#backtofteamInfo {
+    margin-top: -48px;
+    margin-left: -95px;
+    box-shadow: 1px 2px 7px -4px #ffb320;
+}
+
+/*------------------
+  fieldreview modal end
+---------------------*/

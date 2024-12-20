@@ -1,0 +1,70 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.4'
+	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+	id 'java'
+	id 'war'
+}
+
+group = 'org.ai'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+jar {
+	enabled = false
+}
+
+war {
+	manifest {
+		attributes 'Spring-Boot-Classes': 'WEB-INF/classes'
+		attributes 'Spring-Boot-Lib': 'WEB-INF/lib/'
+		attributes 'Spring-Boot-Version': '2.7.4'
+		attributes 'Main-Class': 'com.ai.controller.FutsalApplication'
+	}
+}
+
+war {
+	archiveName("futsal.war")
+}
+
+bootWar.enabled = false
+war.enabled = true
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.springframework.data:spring-data-mongodb:3.4.5'
+	implementation group: 'com.google.code.gson', name: 'gson', version: '2.10'
+    implementation 'org.jetbrains:annotations:20.1.0'
+	implementation 'org.jetbrains:annotations:20.1.0'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.slf4j:slf4j-api'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.7.5'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4.2'
+	implementation 'net.coobird:thumbnailator:0.4.18'
+	providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'org.springframework.boot:spring-boot-maven-plugin:2.7.5'
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+	testImplementation 'ch.qos.logback:logback-classic:1.4.5'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.webjars:stomp-websocket:2.3.3'
+	implementation 'org.webjars:sockjs-client:1.0.2'
+	implementation 'org.webjars:webjars-locator-core'
+	implementation 'org.webjars:bootstrap:3.3.7'
+	implementation 'org.webjars:jquery:3.1.1-1'
+	implementation 'com.google.firebase:firebase-admin:6.8.1'
+
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

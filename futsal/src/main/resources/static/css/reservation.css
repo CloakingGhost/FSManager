@@ -1,0 +1,150 @@
+
+img {
+    height: auto;
+    max-width: 100%;
+}
+
+/* -------------------
+:: 18.0 Cart Page CSS
+------------------- */
+.cart_area {
+    min-height: 75%;
+    height: auto;
+}
+
+.cart-table .table {
+    position: relative;
+    z-index: 9;
+}
+
+.cart_area table thead {
+    background-color: #f4f2f8;
+    border: none;
+}
+
+.cart_product_img > img {
+    width: 200px;
+    margin-right: 20px;
+    border-radius: 8px;
+    height: 110px;
+}
+
+.cart-table .table td,
+.cart-table .table th {
+    padding: 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    border: none;
+    font-size: 15px;
+}
+
+.cart-table .qty-minus,
+.cart-table .qty-plus {
+    background-color: #f6f6f6;
+    cursor: pointer;
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+}
+
+.cart-table .qty-minus i,
+.cart-table .qty-plus i {
+    line-height: 30px;
+    font-size: 10px;
+}
+
+.cart-table .qty-text {
+    background-color: #f6f6f6;
+    border: medium none;
+    display: inline-block;
+    height: 30px;
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield;
+    appearance: textfield;
+    text-align: center;
+    font-size: 12px;
+    width: 50px;
+}
+
+.cart-table .quantity {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    text-align: center;
+}
+
+.cart_area .update-checkout a,
+.cart_area .back-to-shop a {
+    background-color: transparent;
+    border-radius: 0;
+    display: inline-block;
+
+    line-height: 42px;
+    min-width: 120px;
+    padding: 0 28px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    border: 2px solid #3a3a3a;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+.cart_area .update-checkout a:first-child {
+    background-color: #f4f2f8;
+    color: #7a7a7a;
+    border-color: #f4f2f8;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.cart_area .update-checkout a:last-child {
+    background-color: #f4f2f8;
+    color: #7a7a7a;
+    border-color: #f4f2f8;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.reservetd div {
+    display: flex;
+    margin: 3px 0;
+}
+
+.reservetd h6 {
+    font-weight: bold;
+    line-height: unset;
+}
+
+.reservetd a {
+    padding-left: 5px;
+    font-size: 16px;
+    margin-bottom: 1px;
+}
+
+.reservetd a.item1, a.item2, a.item3 {
+    color: #000000;
+    text-decoration: none;
+}
+
+.reservetd a.item1, a.item2, a.item3:hover {
+    color: #000000;
+    text-decoration: none;
+}
+
+tr:nth-child(odd) {
+    box-shadow: 1px 2px 5px 3px #efefef;
+}
+
+form[name='selectAway'] tr {
+    vertical-align: middle
+}
+
+form[name='selectAway'] img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}

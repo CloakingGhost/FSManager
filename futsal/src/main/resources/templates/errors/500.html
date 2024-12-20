@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Server Error</title>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="Game Warrior Template"/>
+    <meta name="keywords" content="warrior, game, creative, html"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Main Logo -->
+    <link th:href="@{/img/mainlogo.png}" rel="shortcut icon"/>
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"/>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/error404.css}"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css">
+</head>
+<body style="width: 1903px; margin: auto">
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+
+<!-- Header section -->
+<div class="modal" id="loginModal">
+    <div class="modal_content" id="loginModalContent">
+        <div>
+            <p>로그인 방식을 선택해주세요.</p>
+        </div>
+        <div id='loginSet'>
+            <img id="kakaoLogin" height="55px" th:src="@{/img/kakaoLogin.png}"/>
+            <input type="hidden" th:value="${apiURL}" id="naverURL">
+            <img class="my-2" id="naverLogin" height="55px" th:src="@{/img/naverLogin.png}"/>
+            <img id="googleLogin" height="55px" th:src="@{/img/googleLogin.png}"/>
+        </div>
+        <button type="button" class="btn btn-warning" id="backBtn">돌아가기</button>
+    </div>
+</div>
+<header class="header-section" style="width: inherit;">
+    <div class="container">
+        <nav class="main-menu row d-flex align-items-center">
+            <!-- logo -->
+            <div class="col-md-2">
+                <a th:href="@{/main}">
+                    <img th:src="@{/img/logo.png}">
+                </a>
+            </div>
+            <!-- search field -->
+            <div class="col-md-4 d-flex align-items-center">
+            </div>
+            <!-- toggle -->
+            <div class="offset-md-3 col-md-1 d-flex align-items-center">
+
+            </div>
+            <!-- login button -->
+            <div class="col-md-2 text-md-center d-flex align-items-center">
+                <div class="user-panel" style="padding: 16px 48px;">
+                    <th:block th:if="${session.userId eq null}">
+                        <span id="signIn"></span>
+                        <a th:href="@{/main}">돌아가기</a>
+                    </th:block>
+                    <a th:href="@{/main}" th:unless="${session.userId eq null}">돌아가기</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<!-- Header section End-->
+<!-- Latest news section -->
+<div class="latest-news-section">
+    <div class="ln-title">FUTSAL News</div>
+    <div class="news-ticker">
+        <div class="news-ticker-contant">
+            <div class="nt-item">
+                <span class="new">공지사항</span>A구장이 공사중입니다. 이용 양해 부탁드립니다.
+            </div>
+            <div class="nt-item">
+                <span class="strategy">축하합니다</span>우리나라 풋살 국가대표가 브라질을 이겼습니다.
+            </div>
+            <div class="nt-item">
+                <span class="racing">매칭</span>홍혁기팀이랑 매치하실 팀 구해요
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Latest news section end -->
+<!--  에러페이지 -->
+<!--dust particel-->
+<div>
+    <div class="starsec"></div>
+    <div class="starthird"></div>
+    <div class="starfourth"></div>
+    <div class="starfifth"></div>
+</div>
+<!--Dust particle end--->
+
+<div class="lamp__wrap">
+    <div class="lamp">
+        <div class="cable"></div>
+        <div class="cover"></div>
+        <div class="in-cover">
+            <div class="bulb"></div>
+        </div>
+        <div class="light"></div>
+    </div>
+</div>
+<!-- END Lamp -->
+<section class="error">
+    <!-- Content -->
+    <div class="error__content">
+        <div class="error__message message">
+            <h1 class="message__title">500 Page</h1>
+            <p class="message__text">
+                We're sorry, the page you were looking for isn't found here. The
+                link you followed may either be broken or no longer exists. Please
+                try again, or take a look at our.
+            </p>
+        </div>
+        <div class="error__nav e-nav">
+            <a th:href="@{/main}" target="_blanck" class="e-nav__link"></a>
+        </div>
+    </div>
+    <!-- END Content -->
+</section>
+</a>
+<!--  에러페이지끝 -->
+<!-- Footer section -->
+<footer class="footer-section">
+    <div class="container">
+        <p class="copyright">
+            주식회사 풋살맨&nbsp;&nbsp; |&nbsp;&nbsp; 대표자 : 재현리&nbsp;&nbsp;
+            |&nbsp;&nbsp; 사업자 등록번호 : 159 78 00280<br> 대표번호 : 070-1577-1577
+            ( 평일 10:00-19:30 ) &nbsp;&nbsp;|&nbsp;&nbsp;
+            고객문의 : 카카오톡 검색 - 풋살매니저 ( 10시-23시 )
+        </p>
+    </div>
+</footer>
+<!-- Footer section end -->
+
+<!--====== Javascripts & Jquery ======-->
+<script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/owl.carousel.min.js}"></script>
+<script th:src="@{/js/jquery.marquee.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/sortTable.js}"></script>
+
+</body>
+</html>

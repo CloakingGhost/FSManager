@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Team Info</title>
+    <meta charset="UTF-8"/>
+    <link id="contextPathHolder" th:data-contextPath="${#httpServletRequest.getContextPath()}"/>
+    <meta name="description" content="Game Warrior Template"/>
+    <meta name="keywords" content="warrior, game, creative, html"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Main Logo -->
+    <link th:href="@{/img/mainlogo.png}" rel="shortcut icon"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet"/>
+    <link href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/infowindow.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/myPage.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app-style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/button.css}"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"
+            integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<input type="hidden" th:if="${session.userId ne null}" th:value="${member.alarmCount}" id="wholealarmcnt">
+<input type="hidden" th:if="${session.userId ne null}" th:value="${member.readCount}" id="readalarmcnt">
+<input type="hidden" id="teamcpt" th:value="${myteam.get_id()}">
+<input type="hidden" th:if="${session.userId ne null}" th:value="${session.userId}" id="userId">
+<input type="hidden" th:if="${team ne null}" th:value="${team.TName}" id="ourteam">
+<input type="hidden" th:if="${member ne null}" th:value="${member.nickName}" id="mynickname">
+<input type="hidden" th:value="${uuid}" id="uuid">
+<body class="bg-theme bg-theme1" style="width: 1903px; margin: auto;">
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+<!-- Header section -->
+<div class="modal" id="loginModal">
+    <div class="modal_content" id="loginModalContent">
+        <div>
+            <p>로그인 방식을 선택해주세요.</p>
+        </div>
+        <div id='loginSet'>
+            <img id="kakaoLogin" height="55px" th:src="@{/img/kakaoLogin.png}"/>
+            <input type="hidden" th:value="${apiURL}" id="naverURL">
+            <img class="my-2" id="naverLogin" height="55px" th:src="@{/img/naverLogin.png}"/>
+            <img id="googleLogin" height="55px" th:src="@{/img/googleLogin.png}"/>
+        </div>
+        <button type="button" class="btn btn-warning" id="backBtn">돌아가기</button>
+    </div>
+</div>
+<header class="header-section" style="width: inherit;">
+    <div class="container">
+        <nav class="main-menu row d-flex align-items-center">
+            <!-- logo -->
+            <div class="col-md-2">
+                <a th:href="@{/main}">
+                    <img th:src="@{/img/logo.png}">
+                </a>
+            </div>
+            <!-- search field -->
+            <div class="col-md-4 d-flex align-items-center">
+                <input type="text" class="w-75 mr-2 py-1" name="fName" id="searchField" placeholder=" 찾는 구장 이름">
+                <button type="button" class="p-1 px-2 d-flex align-items-center" id="searchFieldButton">
+                    <img src="https://i.ibb.co/NSJYXvT/image.png">
+                </button>
+            </div>
+            <!-- toggle -->
+            <div class="offset-md-3 col-md-1 d-flex align-items-center">
+                <th:block th:if="${session.userId ne null}">
+                    <ul class="d-flex align-items-center">
+                        <li class="quickmenubtn" id="quickmenubtn">
+                            <img src="https://i.ibb.co/Gs4SCtd/image.png">
+                        </li>
+                        <!-- myPage 시작 -->
+                    </ul>
+                    <div class="mb-4 rounded-circle" style="display: none;" id="redbull"></div>
+                </th:block>
+            </div>
+            <!-- login button -->
+            <div class="col-md-2 text-md-center d-flex align-items-center">
+                <div class="user-panel">
+                    <th:block th:if="${session.userId eq null}">
+                        <span id="signIn">로그인</span>
+                        / <a th:href="@{/register}">회원가입</a>
+                    </th:block>
+                    <a th:href="@{/logout}" th:unless="${session.userId eq null}">로그아웃</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<div th:if="${session.userId ne null}" class="quickmenumodal" id="quickmenumodal" style="color: black;">
+    <input type="hidden" th:value="${member.nickName}" id="memberNickName">
+    <div id="hello" class="container-fluid">
+        <div class="p-0 mt-2">
+            <div class="card card-widget widget-user" style="top: 10px;">
+                <div class="widget-user-header bg-info">
+                    <h3 class="widget-user-desc font-weight-bold" style="color: black;"
+                        th:text="${member.nickName}"></h3>
+                </div>
+                <div class="widget-user-image">
+                    <img class="img-circle elevation-2"
+                         src="https://i.ibb.co/BTp9rgD/testBall.png"
+                         alt="User Avatar"/>
+                </div>
+                <div class="card-footer" style="background-color: white;">
+                    <div class="row">
+                        <div class="col-md-7 border-right p-1">
+                            <div class="description-text mb-1">총 포인트</div>
+                            <div class="description-text font-weight-bold"
+                                 th:text="|${#numbers.formatInteger(point, 0, 'COMMA')} P|"></div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-md-5 p-1">
+                            <div class="description-text mb-1" onclick="payformopen()">
+                                <img src="https://i.ibb.co/HrLdnFZ/payment-icon-yellow-small.png">
+                                충전
+                            </div>
+                            <div class="description-text" onclick="withdraw()"><img
+                                    src="https://i.ibb.co/rssWfFR/image.png">
+                                출금
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+            </div>
+            <div class="text-center item-option">
+                <div class="row px-5 my-3 mr-0 fs-5 flex-nowrap">
+                    <div class="col-md-4 p-1" style="cursor:pointer;" onclick="openteam()">
+                        <img src="https://i.ibb.co/54CwNLM/image.png">
+                        <div class="p-1">팀 정보</div>
+                    </div>
+                    <div class="col-md-4 p-1 mx-2" style="cursor:pointer;"
+                         onclick="openreservation()">
+                        <img src="https://i.ibb.co/6JrQwrM/image.png">
+                        <div class="p-1" style="cursor:pointer;">예약 목록
+                        </div>
+                    </div>
+                    <div class="col-md-4 p-1" style="cursor:pointer;" onclick="opencommunity()">
+                        <img src="https://i.ibb.co/gFL5Mfv/image.png">
+                        <div class="p-1">게시판
+                        </div>
+                    </div>
+                </div>
+                <div class="row px-5 my-3 mr-0 fs-5 flex-nowrap">
+                    <div class="col-md-4 p-1" id="mapopenlol"
+                         style="margin-right: 8px; cursor: pointer;">
+                        <img src="https://i.ibb.co/cbz8xrC/image.png">
+                        <div class="p-1">지도
+                        </div>
+                    </div>
+                    <div class="col-md-4 p-1" id="calendaropenlol"
+                         style="margin-right: 8px; cursor: pointer;">
+                        <img src="https://i.ibb.co/r34K9qd/image.png">
+                        <div class="p-1">달력
+                        </div>
+                    </div>
+                    <div class="col-md-4 p-1" id="alarmopenlol" style="cursor:pointer;">
+                        <img class="mt-1"
+                             src="https://i.ibb.co/zP5xkVk/image.png"
+                             style="width: 40%;"/>
+                        <p id="memberalramcount" style="font-size: 0.1em; margin-left: 38px;
+                                                            background-color: tomato; height: 19px;
+                                                            border-radius: 50px; color: #fff; margin-top: -27px; width: 19px;"
+                           th:text="${member.alarmCount - member.readCount} > 0 ? ${member.alarmCount - member.readCount} : 0"></p>
+                        <div class="p-1" style="margin-top: -10px; color: black;">알림</div>
+                    </div>
+                    <!-- 지도부분 시작-->
+                    <input id="fNList" type="hidden" th:value="${fNList}">
+                    <input id="latList" type="hidden" th:value="${latList}">
+                    <input id="lonList" type="hidden" th:value="${lonList}">
+                    <div style="width: 350px; height: 350px; display: none; margin-left: -380px; top: -236px; right: -420px;"
+                         id="map_n"></div>
+                    <!-- 지도부분 끝-->
+                    <!-- 달력부분 시작-->
+                    <ul class="dropdown-menu notif-box animated fadeIn"
+                        aria-labelledby="notifDropdown"
+                        style="width: 328px; height: 295px; display: none; margin-left: 230px; top: 15px; background-color: white; font-size: 1rem;"
+                        id="calendarhere">
+                        <div id="futsalDate"></div>
+                    </ul>
+                    <!-- 달력부분 끝-->
+                    <!-- 페이부분시작-->
+                    <div class="dropdown-menu notif-box animated fadeIn"
+                         aria-labelledby="notifDropdown"
+                         style="display: none; margin-left: -140px; top: 165px; height: 320px; width: 400px; font-style: italic; background-color: white;"
+                         id="payhere">
+                        <li>
+                            <div class="dropdown-title" th:text="|결제할 방식과 금액을 선택하세요.|" style="background-color: white;"></div>
+                        </li>
+                        <li>
+                            <div class="notif-center">
+                                <a style="margin-left:0px; background-color:ivory; color:tomato;">
+                                    <div class="notif-img">
+                                        <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                             alt="Img Profile"/>
+                                    </div>
+                                    <div class="notif-content">
+                                        <label for="payway" style="color: tomato;">결제방식을 선택하세요</label>
+                                        <br>
+                                        <select name="payway" id="payway" required>
+                                            <option value="kakaopay">카카오페이</option>
+                                            <option value="card">카드</option>
+                                        </select>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="notif-content"
+                                 style="padding: 30px; line-height: 30px; background-color: ivory; font-style: italic; color: black;">
+                                <input type="radio" name="howmuch" id="r1" value="10000"
+                                       checked>10,000원
+                                <input type="radio" name="howmuch" id="r2" value="50000">50,000원
+                                <input type="radio" name="howmuch" id="r3" value="100000">100,000원
+                                <input type="radio" name="howmuch" value="직접입력">직접입력
+                                <br>
+                                <label for="payway" style="color: black;">충전금액 :&nbsp;</label>
+                                <input type="text"
+                                       name="text"
+                                       id="r4"
+                                       style="width: 254px;"
+                                       placeholder="숫자(충전할 금액)만 입력하세요">
+                            </div>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    style="cursor:pointer; width: 200px; float: right; margin-right: 100px; margin-top: 10px;"
+                                    class="butn btnFade btnBlueGreen"
+                                    onclick="requestPayopen()">결제요청
+                            </button>
+                        </li>
+                    </div>
+                    <!-- 페이부분끝-->
+
+
+                    <!-- 페이테스트시작-->
+
+                    <!-- 페이테스트끝-->
+
+                    <!-- 알람드롭다운 시작-->
+                    <ul class="dropdown-menu notif-box animated fadeIn"
+                        aria-labelledby="notifDropdown" id="alarmhere"
+                        style="display: none; margin-left: 225px; top: 14px;">
+                        <li>
+                            <div class="dropdown-title"
+                                 th:text="${member.alarmCount - member.readCount} > 0 ? '새로운 메세지가 있습니다.' : '새로운 메세지가 없습니다.'"></div>
+                        </li>
+                        <li>
+                            <div class="notif-center">
+                                <div id="unreadMsgTypeHome"></div>
+                                <div id="unreadMsgTypeManner"></div>
+                                <div id="unreadMsgTypeAway"></div>
+                                <th:block th:each="unreadalarms : ${unreadalarms}">
+
+                                    <a th:if="${unreadalarms.alarmType eq '매너'}"
+                                       onclick="movetoreservation(this)"
+                                       style="margin-left:0px;background-color:ivory;color:tomato;"
+                                       th:class="${unreadalarms.message}">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매너점수를 평가해 주세요</span>
+                                            <span class="time" th:text="${unreadalarms.message}" style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${unreadalarms.alarmType eq '전적기입'}"
+                                       onclick="movetoreservation(this)"
+                                       style="margin-left:0px;background-color:ivory;color:tomato;"
+                                       th:class="${unreadalarms.message}">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">승부 결과를 알려주세요.</span>
+                                            <span class="time" th:text="${unreadalarms.message}" style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${unreadalarms.alarmType eq '홈'}"
+                                       onclick="movetoreservation(this)"
+                                       style="margin-left:0px;background-color:ivory;color:tomato;"
+                                       class="unreadMsgTypeHome">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매칭확정을 기다리고 있습니다.</span>
+                                            <span class="time" th:text="${unreadalarms.message}" style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${unreadalarms.alarmType eq '어웨이'}"
+                                       onclick="movetoreservation(this)"
+                                       style="margin-left:0px;background-color:ivory;color:tomato;"
+                                       class="unreadMsgTypeAway">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매칭이 확정되었습니다.</span>
+                                            <span class="time" th:text="${unreadalarms.message}" style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                </th:block>
+                                <th:block th:if="${readalarms ne null}"
+                                          th:each="readalarms : ${readalarms}">
+                                    <a th:if="${readalarms.alarmType eq '매너'}"
+                                       style="margin-left:0px; background-color:#e0e0e0;color:#7d8c95;">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매너점수를 평가해 주세요</span>
+                                            <span class="time" th:text="${readalarms.message}"
+                                                  style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${readalarms.alarmType eq '전적기입'}"
+                                       style="margin-left:0px; background-color:#e0e0e0;color:#7d8c95;">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">승부 결과를 알려주세요.</span>
+                                            <span class="time" th:text="${readalarms.message}"
+                                                  style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${readalarms.alarmType eq '홈'}"
+                                       style="margin-left:0px; background-color:#e0e0e0;color:#7d8c95;">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매칭확정을 기다리고 있습니다.</span>
+                                            <span class="time" th:text="${readalarms.message}"
+                                                  style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${readalarms.alarmType eq '어웨이'}"
+                                       style="margin-left:0px; background-color:#e0e0e0;color:#7d8c95;">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매칭이 확정되었습니다.</span>
+                                            <span class="time" th:text="${readalarms.message}"
+                                                  style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                </th:block>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- 알람드롭다운 끝-->
+                    </li>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header section End-->
+
+<!-- Latest news section -->
+<div class="latest-news-section">
+    <div class="ln-title">FUTSAL News</div>
+    <div class="news-ticker">
+        <div class="news-ticker-contant">
+            <div class="nt-item">
+                <span class="new">공지사항</span>A구장이 공사중입니다. 이용 양해 부탁드립니다.
+            </div>
+            <div class="nt-item">
+                <span class="strategy">축하합니다</span>우리나라 풋살 국가대표가 브라질을 이겼습니다.
+            </div>
+            <div class="nt-item">
+                <span class="racing">매칭</span>홍혁기팀이랑 매치하실 팀 구해요
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Latest news section end -->
+
+<!--  팀 관리 -->
+<div id="pageloader-overlay" class="visible incoming">
+    <div class="loader-wrapper-outer">
+        <div class="loader-wrapper-inner">
+            <div class="loader"></div>
+        </div>
+    </div>
+</div>
+<!-- end loader -->
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div class="col-lg-4" style="background-color: black; opacity: 0.6; height:750px;">
+                <div class="card profile-card-2">
+                    <div class="card-img-block">
+                    </div>
+                    <div class="card-body pt-5">
+                        <div id="logoImage">
+                            <img th:src="${myteam.logoPath}" alt="profile-image" class="profile"/>
+                        </div>
+                        <h5 class="card-title" th:text="${myteam.tName}"></h5>
+                        <!-- 주장만보이는 가입신청리스트시작-->
+                        <hr/>
+                        <div style="overflow-x:hidden; overflow-y: auto; height:180px;">
+                            <th:block th:if="${member.nickName eq myteam._id && applyMember ne null}">
+                                <div th:each="applyMember:${applyMember}">
+                                    <span th:text="|ㅇ ${applyMember}|"></span>
+                                    <button name="acceptapply" class="butn btnFade btnBlueGreen" style="width:45px; height: 25px; padding: 0px; font-size: 15px;" th:value="${applyMember}">승인</button>
+                                    <button name="rejectapply" class="butn btnFade btnBlueGreen" style="width:45px; height: 25px; padding: 0px; font-size: 15px;" th:value="${applyMember}">거부</button>
+                                </div>
+                            </th:block>
+                        </div>
+                        <!-- 주장만보이는 가입신청리스트끝-->
+                        <hr/>
+                        <!-- 팀원리스트시작-->
+                        <div style="overflow-x:hidden; overflow-y: auto; height: 220px;">
+                            <h5 class="card-title">팀원 리스트</h5>
+                            <div th:each="teamMember : ${teamMember}">
+                                <span th:if="${myteam._id eq teamMember}" th:text="|주장 - ${teamMember}|"></span>
+                                <span th:if="${myteam._id ne teamMember}" th:text="|ㅇ ${teamMember}|"></span>
+                                <button type="button" th:if="${myteam._id eq member.nickName && myteam._id ne teamMember}" name="kickmemberbtn" th:value="${teamMember}" style="cursor: pointer; background-color: black;">
+                                    <img src="https://i.ibb.co/s2s5trB/image.png" style="width: 20px; height: 20px; background-color:black ">
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <!-- 팀원리스트끝-->
+                        <div class="icon-block">
+                            <a href="javascript:void();">
+                                <i class="fa fa-facebook bg-facebook text-white"></i></a>
+                            <a href="javascript:void();">
+                                <i class="fa fa-twitter bg-twitter text-white"></i></a>
+                            <a href="javascript:void();">
+                                <i class="fa fa-google-plus bg-google-plus text-white"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card" style="background-color: black; opacity: 0.6;">
+                    <div class="card-body" style="height: 750px;">
+                        <ul class="nav nav-tabs nav-tabs-primary top-icon nav-justified">
+                            <li class="nav-item">
+                                <a href="javascript:void();" data-target="#profile" data-toggle="pill"
+                                   class="nav-link active">
+                                    <i class="icon-user"></i>
+                                    <span class="hidden-xs">Profile</span>
+                                </a>
+                            </li>
+                            <li class="nav-item" th:if="${#lists.contains(myteam.teamMember, member.nickName)}">
+                                <a href="javascript:void();" data-target="#messages" data-toggle="pill"
+                                   class="nav-link">
+                                    <i class="icon-envelope-open"></i>
+                                    <span class="hidden-xs">notice</span>
+                                </a>
+                            </li>
+                            <li class="nav-item" th:if="${myteam._id eq member.nickName}">
+                                <a href="javascript:void();" data-target="#edit" data-toggle="pill" class="nav-link">
+                                    <i class="icon-note"></i>
+                                    <span class="hidden-xs">Edit</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content p-3" style="height: 600px;">
+                            <div class="tab-pane active" id="profile">
+                                <h4 class="mb-3" th:text="${myteam.tName}"></h4>
+                                <div class="row">
+                                    <div class="col-md-6" style="height: 570px;">
+                                        <h5>주장</h5>
+                                        <p style="color: #5bc4f4;" th:text="${myteam._id}"></p>
+                                        <h5>통산 전적</h5>
+                                        <p style="color: #5bc4f4;" th:text="${myteamrecord}"></p>
+                                        <h5>활동지역</h5>
+                                        <p style="color: #5bc4f4;" th:text="${myteam.tArea}"></p>
+                                        <h5>연령대</h5>
+                                        <p style="color: #5bc4f4;" th:text="${myteam.tAge}"></p>
+                                        <h5>총 판 수</h5>
+                                        <p style="color: #5bc4f4;" th:text="${myteam.tTotal}"></p>
+                                        <h5>매너 점수</h5>
+                                        <p style="color: #5bc4f4;" th:text="|${manneravg} / 5.0|"></p>
+                                        <h5>창단일</h5>
+                                        <p style="color: #5bc4f4;" th:text="${myteam.foundingDate}"></p>
+                                        <h5>유니폼 색</h5>
+                                        <p style="color: #5bc4f4;" th:text="${myteam.uniform}"></p>
+                                    </div>
+                                    <div class="col-md-6" style="height: 570px;" >
+                                        <h5>팀 소개</h5>
+                                        <div id="introduceteam" style="height: 130px; overflow-x: hidden; overflow-y: auto; margin-top: 10px;">
+                                            <p style="color: #5bc4f4; white-space: pre-wrap;" class="card-text" th:text="${myteam.TeamInfo}" id="realintroduce"></p>
+                                        </div>
+                                        <h6>최근 경기</h6>
+                                        <hr/>
+                                        <div style="height: 330px; overflow-x: hidden; overflow-y: auto; line-height: 2;" th:if="${reservelist ne null}">
+                                            <div th:each="reservelist : ${reservelist}" th:if="${reservelist.nameA ne reservelist.nameB}">
+                                                <a th:href="@{teamInfo?tName={tName}(tName=${reservelist.nameA})}"><span style="color: #5bc4f4;" th:text="${reservelist.nameA}"></span></a> vs <a th:href="@{teamInfo?tName={tName}(tName=${reservelist.nameB})}"><span style="color: #5bc4f4;" th:text="${reservelist.nameB}"></span></a>
+                                                <th:block th:each="records : ${records}">
+                                                    <span style="color: gold; padding-left: 10px; font-weight: bold;" th:if="${reservelist.field eq records.field} and ${reservelist.date eq records.date} and ${reservelist.time eq records.time} and ${records.result ne null}" th:text="${records.result}"></span>
+                                                    <span style="color: red; padding-left: 10px; font-weight: bold;" th:if="${reservelist.field eq records.field} and ${reservelist.date eq records.date} and ${reservelist.time eq records.time} and ${records.result eq null}">미입력</span>
+                                                </th:block>
+                                                <span style="padding-right: 20px; color: lightslategray; float: right;" th:text="|${reservelist.date} ${reservelist.time} |"></span>
+                                            </div>
+                                            <div th:each="reservelist : ${reservelist}" th:if="${reservelist.nameA eq reservelist.nameB}">
+                                                <span style="color: #5bc4f4;" th:text="|${reservelist.nameA} 내전|"></span>
+                                                <span style="padding-right: 20px; color: lightslategray; float: right;" th:text="|${reservelist.date} ${reservelist.time} |"></span>
+
+                                            </div>
+                                        </div>
+                                        <div style="height: 480px; overflow-x: hidden; overflow-y: auto;" th:unless="${reservelist ne null}">
+                                            <span style="color: #5bc4f4;">최근 경기가 없습니다</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!--/row-->
+                                <div id="applymotherfucker" th:if="${team eq null}">
+                                    <div th:if="${applyMember ne null}" style="display: inline">
+                                        <button th:if="${#strings.contains(applyMember, member.nickName)}" name="waittingapply" th:value="${myteam.tName}" style="cursor:pointer; margin-left: 970px; width: 100px" class="butn btnFade btnBlueGreen">가입 대기중</button>
+                                        <button th:unless="${#strings.contains(applyMember, member.nickName)}" name="applyteam" th:value="${myteam.tName}" style="cursor:pointer; margin-left: 970px; width: 100px" class="butn btnFade btnBlueGreen">신청하기</button>
+                                    </div>
+                                    <div th:if="${applyMember eq null}" style="display: inline">
+                                        <button name="applyteam" th:value="${myteam.tName}" style="cursor:pointer; margin-left: 970px; width: 100px" class="butn btnFade btnBlueGreen">신청하기</button>
+                                    </div>
+                                </div>
+                                <div th:if="${iamteammate eq 'true'}">
+                                    <button name="exitteambtn" th:if="${myteam._id ne member.nickName}" th:value="${myteam.tName}" style="cursor:pointer; margin-left: 970px; width: 100px" class="butn btnFade btnBlueGreen">탈퇴하기</button>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="messages" value="notice">
+
+                                <div class="table-responsive" style="height: 600px;">
+                                    <table class="table table-hover table-striped"style="overflow: auto;">
+                                        <tbody th:if="${notices ne null}">
+                                        <div id="newnoticehere"></div>
+                                        <tr th:each="notices : ${notices}">
+                                            <td>
+                                                <span style="font-weight: bold">[[${myteam._id}]]</span>
+                                                <span style="float: right">[[${notices.regDate}]]</span>
+                                                <textarea class="hi float-right font-classNamet-bold" readonly>
+                                                    [[${notices.notice}]]
+                                                </textarea>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="edit" th:if="${myteam._id eq member.nickName}">
+                                <form>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label form-control-label">팀 이름</label>
+                                        <div class="col-lg-9">
+                                            <input class="form-control" type="text" th:value="${myteam.tName}"
+                                                   readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label form-control-label">주장 이름</label>
+                                        <div class="col-lg-9">
+                                            <input class="form-control" type="text" th:value="${myteam._id}" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label form-control-label">팀 마크 변경</label>
+                                        <div class="col-lg-9">
+                                            <input class="form-control" type="file" accept="image/*" name="logo"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label form-control-label">활동 지역</label>
+                                        <div class="col-lg-9">
+                                            <input class="form-control" type="text" readonly th:value="${myteam.tArea}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label form-control-label">팀 소개</label>
+                                        <textarea class="form-control" id="introduce" th:text="${myteam.TeamInfo}"
+                                                  style="width: 72%; margin-left: 11px; resize: none; overflow: auto;">
+                                        </textarea>
+                                    </div>
+                                    <div>
+                                        <label class="col-lg-3 col-form-label form-control-label"></label>
+                                        <div class="col-lg-9">
+                                            <input type="reset" class="btn btn-secondary" value="Cancel"/>
+                                            <input type="button" class="btn btn-primary" id="uploadBtn" value="Save Changes"/>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div id="noticeinsertdiv" style="margin-top: 30px;">
+                                    <textarea class="form-control" style="width: 97%; margin-left: 10px; resize: none; overflow: auto; height: 220px; margin-bottom: 10px; " id="noticecontent" maxlength="190"></textarea>
+                                    <button id="noticeinsert" onclick="submitnotice()" th:value="${myteam.tName}" style="cursor:pointer; margin-left: 970px; width: 100px" class="butn btnFade btnBlueGreen">공지등록</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Start Back To Top Button-->
+    <!--<a href="javaScript:void();" class="back-to-top">
+        <i class="fa fa-angle-double-up"></i>
+    </a>-->
+    <!--End Back To Top Button-->
+</div>
+<!--End wrapper-->
+<!-- Bootstrap core JavaScript-->
+<script th:src="@{/js/jquery.min.js}"></script>
+<!-- 팀 관리 끝-->
+<!-- Footer section -->
+<footer class="footer-section">
+    <div class="container">
+        <p class="copyright">
+            주식회사 풋살맨&nbsp;&nbsp; |&nbsp;&nbsp; 대표자 : 재현리&nbsp;&nbsp;
+            |&nbsp;&nbsp; 사업자 등록번호 : 159 78 00280<br> 대표번호 : 070-1577-1577
+            ( 평일 10:00-19:30 ) &nbsp;&nbsp;|&nbsp;&nbsp;
+            고객문의 : 카카오톡 검색 - 풋살매니저 ( 10시-23시 )
+        </p>
+    </div>
+</footer>
+<!-- Footer section end -->
+<!--====== Javascripts & Jquery ======-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.1.js"></script>
+<script type="text/javascript" th:src="@{/js/other_search_field.js}"></script>
+<script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/owl.carousel.min.js}"></script>
+<script th:src="@{/js/jquery.marquee.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/sortTable.js}"></script>
+<script th:if="${myteam._id eq member.nickName}" th:src="@{/js/team.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+        integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8f3bf912ba858b8abef6fa5d46d5ff7b&libraries=services,clusterer,drawing"></script>
+<script type="text/javascript" th:src="@{/js/map_near.js}"></script>
+<script type="text/javascript" th:src="@{/js/datepicker.js}"></script>
+<th:block th:if="${session.userId ne null}">
+    <script type="text/javascript" th:src="@{/js/quick.js}"></script>
+    <script type="text/javascript" th:src="@{/js/websocket.js}"></script>
+    <script type="text/javascript" th:src="@{/js/pay.js}"></script>
+</th:block>
+<script type="text/javascript" th:src="@{/js/applyteam.js}"></script>
+<script type="text/javascript" th:src="@{/js/manageapply.js}"></script>
+<!--개발용 -->
+<th:block th:if="@{/} eq '/'">
+    <script type="text/javascript" th:src="@{/js/login.js}"></script>
+</th:block>
+<!--배포용 -->
+<th:block th:if="@{/} ne '/'">
+    <script type="text/javascript" th:src="@{/js/loginServer.js}"></script>
+</th:block>
+</body>
+</html>

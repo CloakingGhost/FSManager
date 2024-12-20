@@ -1,0 +1,188 @@
+/*------------------
+   fieldreview modal start
+---------------------*/
+body{
+    font-family: 'Noto Sans KR', sans-serif;
+}
+.reviewmodal {
+    position: absolute;
+    width: 1903px;
+    height: 112%;
+    background: rgba(0, 0, 0, 0.8);
+    top: -56px;
+    left: -794px;
+    z-index: 10;
+    display: none;
+}
+
+.review_modal_content {
+    width: 1012px;
+    height: 812px;
+    background: #efefef;
+    border-radius: 10px;
+    position: relative;
+    top: 5%;
+    margin: auto;
+    padding: 30px 0;
+}
+.review_tab {
+    border: 1px solid black;
+    margin: auto;
+    width: 850px;
+    height: 45%;
+}
+.review_write {
+    height: 145px;
+    resize: none;
+    width: 750px;
+    margin-left: 80px;
+    border: 1px solid #fff;
+    box-shadow: 1px 2px 7px -4px grey;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+.bi bi-pencil-square {
+    float: right;
+}
+/*#loginSet img, #signIn {*/
+/*  cursor: pointer;*/
+/*}*/
+
+/*#signIn {*/
+/*  font-size: 14px;*/
+/*}*/
+#reviewbutton {
+    margin-top: -155px;
+    margin-left: 5px;
+    box-shadow: 1px 2px 7px -4px #ffb320;
+}
+#backtofield {
+    margin-top: -48px;
+    margin-left: -88px;
+    box-shadow: 1px 2px 7px -4px #ffb320;
+}
+#backtoreviewmodal {
+    margin-top: -60px;
+    margin-left: -84px;
+    box-shadow: 1px 2px 7px -4px #ffb320;
+}
+#backtomain {
+    margin-top: -60px;
+    /*margin-left: -84px;*/
+    box-shadow: 1px 2px 7px -4px #ffb320;
+}
+.box {
+    margin: 1em auto;
+    background: #f0f0f0;
+    padding: 1em 0;
+    width: 300px;
+    border-radius: 3px;
+    box-shadow: 0px 1px 7px rgba(0, 0, 0, 0.25);
+    height: 86%;
+}
+.box:hover {
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.5);
+}
+.box h1 {
+    font-size: 2em;
+    text-align: center;
+}
+.box .temp {
+    font-size: 4em;
+    line-height: 1;
+    text-align: center;
+    display: block;
+}
+.box .high-low {
+    font-size: 2em;
+    color: #5a7285;
+    text-align: center;
+    display: block;
+    font-weight: 100;
+}
+
+.weather .icon {
+    position: relative;
+    margin: 0 auto;
+}
+
+.spin {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    text-align: center;
+    width: 65px;
+}
+
+.bubble.black {
+    background-color: #313e48;
+    position: relative;
+    width: 70px;
+    height: 70px;
+    padding: 0px;
+    margin-bottom: 12px;
+    border-radius: 50px;
+}
+
+.bubble.black:after {
+    content: "";
+    position: absolute;
+    bottom: -14px;
+    left: 14px;
+    border-style: solid;
+    border-width: 29px 15px 0;
+    border-color: #313e48 transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+    transform: rotate(30deg);
+}
+
+/*.spin img {
+    animation: spin 5s linear infinite;
+    animation-play-state: paused;
+}*/
+
+.box:hover .spin img {
+    animation-play-state: running;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(1turn);
+    }
+}
+
+#modifyReview{
+    border: none;
+    background-color: #fff;
+    float: right;
+}
+#deleteReview{
+    border: none;
+    background-color: #fff;
+    float: right;
+}
+#realmodify{
+    border: none;
+    background-color: #fff;
+    float: right;
+}
+.mainpopularhover:hover{
+    cursor: pointer;
+    color: #ffb320;
+    font-weight: bold;
+}
+.mainreviewhover:hover{
+    cursor: pointer;
+    color: #ffb320;
+    font-weight: bold;
+}
+.mainlikehover:hover{
+    cursor: pointer;
+    color: #ffb320;
+    font-weight: bold;
+}
+/*------------------
+  fieldreview modal end
+---------------------*/

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Community-Write</title>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="Game Warrior Template"/>
+    <meta name="keywords" content="warrior, game, creative, html"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Main Logo -->
+    <link th:href="@{/img/mainlogo.png}" rel="shortcut icon"/>
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"/>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style1.css}"/>
+    <link rel="stylesheet" th:href="@{/css/myPage.css}"/>
+    <link rel="stylesheet" th:href="@{/css/community.css}"/>
+    <link rel="stylesheet" th:href="@{/css/infowindow.css}"/>
+    <link rel="stylesheet" th:href="@{/css/button.css}"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"
+            integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <link id="contextPathHolder" th:data-contextPath="${#httpServletRequest.getContextPath()}"/>
+</head>
+<body>
+<input type="hidden" th:if="${session.userId ne null}" th:value="${member.alarmCount}" id="wholealarmcnt">
+<input type="hidden" th:if="${session.userId ne null}" th:value="${member.readCount}" id="readalarmcnt">
+<input type="hidden" id="uuid" th:value="${uuid}">
+<input type="hidden" id="userId" th:value="${member.id}">
+<input type="hidden" id="mynickname" th:value="${member.nickName}">
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+
+<!-- Header section -->
+<div class="modal" id="loginModal">
+    <div class="modal_content" id="loginModalContent">
+        <div>
+            <p>로그인 방식을 선택해주세요.</p>
+        </div>
+        <div id='loginSet'>
+            <img id="kakaoLogin" height="55px" th:src="@{/img/kakaoLogin.png}"/>
+            <input type="hidden" th:value="${apiURL}" id="naverURL">
+            <img class="my-2" id="naverLogin" height="55px" th:src="@{/img/naverLogin.png}"/>
+            <img id="googleLogin" height="55px" th:src="@{/img/googleLogin.png}"/>
+        </div>
+        <button type="button" class="btn btn-warning" id="backBtn">돌아가기</button>
+    </div>
+</div>
+<header class="header-section" style="width: inherit;">
+    <div class="container">
+        <nav class="main-menu row d-flex align-items-center">
+            <!-- logo -->
+            <div class="col-md-2">
+                <a th:href="@{/main}">
+                    <img th:src="@{/img/logo.png}">
+                </a>
+            </div>
+            <!-- search field -->
+            <div class="col-md-4 d-flex align-items-center">
+                <input type="text" class="w-75 mr-2 py-1" name="fName" id="searchField" placeholder=" 찾는 구장 이름">
+                <button type="button" class="p-1 px-2 d-flex align-items-center" id="searchFieldButton">
+                    <img src="https://i.ibb.co/NSJYXvT/image.png">
+                </button>
+            </div>
+            <!-- toggle -->
+            <div class="offset-md-3 col-md-1 d-flex align-items-center">
+                <th:block th:if="${session.userId ne null}">
+                    <ul class="d-flex align-items-center">
+                        <li class="quickmenubtn" id="quickmenubtn">
+                            <img src="https://i.ibb.co/Gs4SCtd/image.png">
+                        </li>
+                        <!-- myPage 시작 -->
+                    </ul>
+                    <div class="mb-4 rounded-circle" style="display: none;" id="redbull"></div>
+                </th:block>
+            </div>
+            <!-- login button -->
+            <div class="col-md-2 text-md-center d-flex align-items-center">
+                <div class="user-panel">
+                    <th:block th:if="${session.userId eq null}">
+                        <span id="signIn">로그인</span>
+                        / <a th:href="@{/register}">회원가입</a>
+                    </th:block>
+                    <a th:href="@{/logout}" th:unless="${session.userId eq null}">로그아웃</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<div th:if="${session.userId ne null}" class="quickmenumodal" id="quickmenumodal">
+    <input type="hidden" th:value="${member.nickName}" id="memberNickName">
+    <div id="hello" class="container-fluid">
+        <div class="p-0 mt-2">
+            <div class="card card-widget widget-user" style="top: 10px;">
+                <div class="widget-user-header bg-info">
+                    <h3 class="widget-user-desc font-weight-bold"
+                        th:text="${member.nickName}"></h3>
+                </div>
+                <div class="widget-user-image">
+                    <img class="img-circle elevation-2"
+                         src="https://i.ibb.co/BTp9rgD/testBall.png"
+                         alt="User Avatar"/>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-7 border-right p-1">
+                            <div class="description-text mb-1">총 포인트</div>
+                            <div class="description-text font-weight-bold"
+                                 th:text="|${#numbers.formatInteger(point, 0, 'COMMA')} P|"></div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-md-5 p-1">
+                            <div class="description-text mb-1" onclick="payformopen()">
+                                <img src="https://i.ibb.co/HrLdnFZ/payment-icon-yellow-small.png">
+                                충전
+                            </div>
+                            <div class="description-text" onclick="withdraw()"><img
+                                    src="https://i.ibb.co/rssWfFR/image.png">
+                                출금
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+            </div>
+            <div class="text-center item-option">
+                <div class="row px-5 my-3 mr-0 fs-5 flex-nowrap">
+                    <div class="col-md-4 p-1" style="cursor:pointer;" onclick="openteam()">
+                        <img src="https://i.ibb.co/54CwNLM/image.png">
+                        <div class="p-1">팀 정보</div>
+                    </div>
+                    <div class="col-md-4 p-1 mx-2" style="cursor:pointer;"
+                         onclick="openreservation()">
+                        <img src="https://i.ibb.co/6JrQwrM/image.png">
+                        <div class="p-1" style="cursor:pointer;">예약 목록
+                        </div>
+                    </div>
+                    <div class="col-md-4 p-1" style="cursor:pointer;" onclick="opencommunity()">
+                        <img src="https://i.ibb.co/gFL5Mfv/image.png">
+                        <div class="p-1">게시판
+                        </div>
+                    </div>
+                </div>
+                <div class="row px-5 my-3 mr-0 fs-5 flex-nowrap">
+                    <div class="col-md-4 p-1" id="mapopenlol"
+                         style="margin-right: 8px; cursor: pointer;">
+                        <img src="https://i.ibb.co/cbz8xrC/image.png">
+                        <div class="p-1">지도
+                        </div>
+                    </div>
+                    <div class="col-md-4 p-1" id="calendaropenlol"
+                         style="margin-right: 8px; cursor: pointer;">
+                        <img src="https://i.ibb.co/r34K9qd/image.png">
+                        <div class="p-1">달력
+                        </div>
+                    </div>
+                    <div class="col-md-4 p-1" id="alarmopenlol" style="cursor:pointer;">
+                        <img class="mt-1"
+                             src="https://i.ibb.co/zP5xkVk/image.png"
+                             style="width: 40%;"/>
+                        <p id="memberalramcount" style="font-size: 0.1em; margin-left: 38px;
+                                                            background-color: tomato; height: 19px;
+                                                            border-radius: 50px; color: #fff; margin-top: -27px; width: 19px;"
+                           th:text="${member.alarmCount - member.readCount} > 0 ? ${member.alarmCount - member.readCount} : 0"></p>
+                        <div class="p-1" style="margin-top: -10px; color: black;">알림</div>
+                    </div>
+                    <!-- 지도부분 시작-->
+                    <input id="fNList" type="hidden" th:value="${fNList}">
+                    <input id="latList" type="hidden" th:value="${latList}">
+                    <input id="lonList" type="hidden" th:value="${lonList}">
+                    <div style="width: 350px; height: 350px; display: none; margin-left: -380px; top: -236px; right: -420px;"
+                         id="map_n"></div>
+                    <!-- 지도부분 끝-->
+                    <!-- 달력부분 시작-->
+                    <ul class="dropdown-menu notif-box animated fadeIn"
+                        aria-labelledby="notifDropdown"
+                        style="width: 328px; height: 295px; display: none; margin-left: 230px; top: 15px;"
+                        id="calendarhere">
+                        <div id="futsalDate"></div>
+                    </ul>
+                    <!-- 달력부분 끝-->
+                    <!-- 페이부분시작-->
+                    <div class="dropdown-menu notif-box animated fadeIn"
+                         aria-labelledby="notifDropdown"
+                         style="display: none; margin-left: -140px; top: 165px; height: 320px; width: 400px; font-style: italic;"
+                         id="payhere">
+                        <li>
+                            <div class="dropdown-title" th:text="|결제할 방식과 금액을 선택하세요.|"></div>
+                        </li>
+                        <li>
+                            <div class="notif-center">
+                                <a style="margin-left:0px; background-color:ivory; color:tomato;">
+                                    <div class="notif-img">
+                                        <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                             alt="Img Profile"/>
+                                    </div>
+                                    <div class="notif-content">
+                                        <label for="payway">결제방식을 선택하세요</label>
+                                        <br>
+                                        <select name="payway" id="payway" required>
+                                            <option value="kakaopay">카카오페이</option>
+                                            <option value="card">카드</option>
+                                        </select>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="notif-content"
+                                 style="padding: 30px; line-height: 30px; background-color: ivory; font-style: italic; ">
+                                <input type="radio" name="howmuch" id="r1" value="10000"
+                                       checked>10,000원
+                                <input type="radio" name="howmuch" id="r2" value="50000">50,000원
+                                <input type="radio" name="howmuch" id="r3" value="100000">100,000원
+                                <input type="radio" name="howmuch" value="직접입력">직접입력
+                                <br>
+                                <label for="payway">충전금액 :&nbsp;</label>
+                                <input type="text"
+                                       name="text"
+                                       id="r4"
+                                       style="width: 254px;"
+                                       placeholder="숫자(충전할 금액)만 입력하세요">
+                            </div>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    style="cursor:pointer; width: 200px; float: right; margin-right: 100px; margin-top: 10px;"
+                                    class="butn btnFade btnBlueGreen"
+                                    onclick="requestPayopen()">결제요청
+                            </button>
+                        </li>
+                    </div>
+                    <!-- 페이부분끝-->
+
+
+                    <!-- 페이테스트시작-->
+
+                    <!-- 페이테스트끝-->
+
+                    <!-- 알람드롭다운 시작-->
+                    <ul class="dropdown-menu notif-box animated fadeIn"
+                        aria-labelledby="notifDropdown" id="alarmhere"
+                        style="display: none; margin-left: 225px; top: 14px;">
+                        <li>
+                            <div class="dropdown-title"
+                                 th:text="${member.alarmCount - member.readCount} > 0 ? '새로운 메세지가 있습니다.' : '새로운 메세지가 없습니다.'"></div>
+                        </li>
+                        <li>
+                            <div class="notif-center">
+                                <div id="unreadMsgTypeHome"></div>
+                                <div id="unreadMsgTypeManner"></div>
+                                <div id="unreadMsgTypeAway"></div>
+                                <th:block th:each="unreadalarms : ${unreadalarms}">
+
+                                    <a th:if="${unreadalarms.alarmType eq '매너'}"
+                                       onclick="movetoreservation(this)"
+                                       style="margin-left:0px;background-color:ivory;color:tomato;"
+                                       th:class="${unreadalarms.message}">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매너점수를 평가해 주세요</span>
+                                            <span class="time" th:text="${unreadalarms.message}" style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${unreadalarms.alarmType eq '전적기입'}"
+                                       onclick="movetoreservation(this)"
+                                       style="margin-left:0px;background-color:ivory;color:tomato;"
+                                       th:class="${unreadalarms.message}">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">승부 결과를 알려주세요.</span>
+                                            <span class="time" th:text="${unreadalarms.message}" style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${unreadalarms.alarmType eq '홈'}"
+                                       onclick="movetoreservation(this)"
+                                       style="margin-left:0px;background-color:ivory;color:tomato;"
+                                       class="unreadMsgTypeHome">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매칭확정을 기다리고 있습니다.</span>
+                                            <span class="time" th:text="${unreadalarms.message}" style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${unreadalarms.alarmType eq '어웨이'}"
+                                       onclick="movetoreservation(this)"
+                                       style="margin-left:0px;background-color:ivory;color:tomato;"
+                                       class="unreadMsgTypeAway">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매칭이 확정되었습니다.</span>
+                                            <span class="time" th:text="${unreadalarms.message}" style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                </th:block>
+                                <th:block th:if="${readalarms ne null}"
+                                          th:each="readalarms : ${readalarms}">
+                                    <a th:if="${readalarms.alarmType eq '매너'}"
+                                       style="margin-left:0px; background-color:#e0e0e0;color:#7d8c95;">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매너점수를 평가해 주세요</span>
+                                            <span class="time" th:text="${readalarms.message}"
+                                                  style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${readalarms.alarmType eq '전적기입'}"
+                                       style="margin-left:0px; background-color:#e0e0e0;color:#7d8c95;">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">승부 결과를 알려주세요.</span>
+                                            <span class="time" th:text="${readalarms.message}"
+                                                  style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${readalarms.alarmType eq '홈'}"
+                                       style="margin-left:0px; background-color:#e0e0e0;color:#7d8c95;">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매칭확정을 기다리고 있습니다.</span>
+                                            <span class="time" th:text="${readalarms.message}"
+                                                  style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                    <a th:if="${readalarms.alarmType eq '어웨이'}"
+                                       style="margin-left:0px; background-color:#e0e0e0;color:#7d8c95;">
+                                        <div class="notif-img">
+                                            <img src="https://i.ibb.co/BTp9rgD/testBall.png"
+                                                 alt="Img Profile"/>
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="block">매칭이 확정되었습니다.</span>
+                                            <span class="time" th:text="${readalarms.message}"
+                                                  style="white-space: pre-wrap;"></span>
+                                        </div>
+                                    </a>
+                                </th:block>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- 알람드롭다운 끝-->
+                    </li>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header section End-->
+<!-- Latest news section -->
+<div class="latest-news-section">
+    <div class="ln-title">FUTSAL News</div>
+    <div class="news-ticker">
+        <div class="news-ticker-contant">
+            <div class="nt-item">
+                <span class="new">공지사항</span>A구장이 공사중입니다. 이용 양해 부탁드립니다.
+            </div>
+            <div class="nt-item">
+                <span class="strategy">축하합니다</span>우리나라 풋살 국가대표가 브라질을 이겼습니다.
+            </div>
+            <div class="nt-item">
+                <span class="racing">매칭</span>홍혁기팀이랑 매치하실 팀 구해요
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 전광판 끝-->
+<!-- Start Contact -->
+<div class="container py-5 h-75">
+    <div class="row">
+        <form class="col-md-9 m-auto" method="post" role="form" name="form">
+            <div class="mb-3">
+                <label>구장선택</label><br>
+                <select name="rsvFld">
+                    <option th:if="${#lists.size(new_reser) == 0}">예약하신 구장이 없습니다.</option>
+                    <th:block th:unless="${#lists.size(new_reser) == 0}" th:each="reser,i : ${new_reser}">
+                        <option th:if="${i.first}">구장 선택</option>
+                        <option th:value="${reser.field}"> [[${reser.field}]] | [[${reser.date}]] | [[${reser.time}]]
+                        </option>
+                    </th:block>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label>제목</label>
+                <input th:if="${#httpServletRequest.requestURI} == ${#httpServletRequest.getContextPath()}+'/community/write'"
+                       type="text" class="form-control mt-1" th:id="title" name="title" placeholder="제목을 입력해 주세요.">
+                <input th:unless="${#httpServletRequest.requestURI} == ${#httpServletRequest.getContextPath()}+'/community/write'"
+                       type="text" class="form-control mt-1" th:id="title" name="title" placeholder="제목을 입력해 주세요."
+                       th:value="${board.title}">
+            </div>
+            <div class="mb-3">
+                <label>내용</label>
+                <textarea
+                        th:if="${#httpServletRequest.requestURI} == ${#httpServletRequest.getContextPath()}+'/community/write'"
+                        class="form-control mt-1" th:id="message" name="message" placeholder="내용을 입력해 주세요." rows="8"
+                        style="resize: none; overflow: auto"></textarea>
+                <textarea
+                        th:unless="${#httpServletRequest.requestURI} == ${#httpServletRequest.getContextPath()}+'/community/write'"
+                        class="form-control mt-1" th:id="message" name="message" placeholder="내용을 입력해 주세요." rows="8"
+                        style="resize: none; overflow: auto">[[${board.message}]]</textarea>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 mb-3">
+                    <label>팀 이름</label>
+                    <input readonly type="text" class="form-control mt-1" th:id="tName" name="tName"
+                           placeholder="소속된 팀이 없습니다."
+                           th:if="${#strings.isEmpty(myTeam)}"/>
+                    <input readonly type="text" class="form-control mt-1" th:id="tName" name="tName" placeholder="팀 이름"
+                           th:unless="${#strings.isEmpty(myTeam)}" th:value="${myTeam.tName}"/>
+                </div>
+                <div class="form-group col-md-6 mb-3">
+                    <label>유니폼 색상</label>
+                    <input readonly type="text" class="form-control mt-1" th:id="uniform" name="uniform"
+                           th:if="${#strings.isEmpty(myTeam)}"/>
+                    <input readonly type="text" class="form-control mt-1" th:id="uniform" name="uniform"
+                           th:unless="${#strings.isEmpty(myTeam)}" placeholder="유니폼 색상" th:value="${myTeam.uniform}"/>
+                </div>
+                <input type="hidden" th:name="writer" th:value="${writer}"/>
+                <input th:if="${#httpServletRequest.requestURI} != ${#httpServletRequest.getContextPath()}+'/community/write'"
+                       type="hidden" th:name="idx" th:value="${board.idx}"/>
+            </div>
+
+            <div class="row" id="writeBtn">
+                <div class="col text-end">
+                    <button th:if="${#httpServletRequest.requestURI} eq ${#httpServletRequest.getContextPath()}+'/community/write'"
+                            type="button" class="btn btn-success btn-lg px-3" onclick="boardSubmit()">
+                        작성 완료
+                    </button>
+                    <button th:unless="${#httpServletRequest.requestURI} eq ${#httpServletRequest.getContextPath()}+'/community/write'"
+                            type="button" class="btn btn-success btn-lg px-3" onclick="boardSubmit()">
+                        수정 완료
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- End Contact -->
+<!-- Footer section -->
+<footer class="footer-section">
+    <div class="container">
+        <p class="copyright">
+            주식회사 풋살맨&nbsp;&nbsp; |&nbsp;&nbsp; 대표자 : 재현리&nbsp;&nbsp;
+            |&nbsp;&nbsp; 사업자 등록번호 : 159 78 00280<br> 대표번호 : 070-1577-1577
+            ( 평일 10:00-19:30 ) &nbsp;&nbsp;|&nbsp;&nbsp;
+            고객문의 : 카카오톡 검색 - 풋살매니저 ( 10시-23시 )
+        </p>
+    </div>
+</footer>
+<!-- Footer section end -->
+
+<!--====== Javascripts & Jquery ======-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.1.js"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/owl.carousel.min.js}"></script>
+<script th:src="@{/js/jquery.marquee.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/community.js}"></script>
+<!-- calendar -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+        integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8f3bf912ba858b8abef6fa5d46d5ff7b&libraries=services,clusterer,drawing"></script>
+<script type="text/javascript" th:src="@{/js/datepicker.js}"></script>
+<script type="text/javascript" th:src="@{/js/map_near.js}"></script>
+
+<script type="text/javascript" th:src="@{/js/other_search_field.js}"></script>
+<th:block th:if="${session.userId ne null}">
+    <script type="text/javascript" th:src="@{/js/quick.js}"></script>
+    <script type="text/javascript" th:src="@{/js/websocket.js}"></script>
+    <script type="text/javascript" th:src="@{/js/pay.js}"></script>
+</th:block>
+<!--개발용 -->
+<th:block th:if="@{/} eq '/'">
+    <script type="text/javascript" th:src="@{/js/login.js}"></script>
+</th:block>
+<!--배포용 -->
+<th:block th:if="@{/} ne '/'">
+    <script type="text/javascript" th:src="@{/js/loginServer.js}"></script>
+</th:block>
+</body>
+</html>

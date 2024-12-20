@@ -1,0 +1,174 @@
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+table {
+    border: 1px #a39485 solid;
+    font-size: .9em;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .25);
+    width: 85%;
+    border-collapse: collapse;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-left: 140px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+
+thead {
+    color: #fff;
+    background: #73685d;
+}
+
+th {
+    padding: .8em .5em;
+    vertical-align: middle;
+    text-align: center;
+}
+
+td {
+    padding: 1em .5em;
+    vertical-align: middle;
+    text-align: center;
+}
+
+td {
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    background: #fff;
+}
+
+td span {
+    font-weight: 600;
+}
+
+td span:first-child {
+    cursor: pointer;
+}
+
+
+td span:first-child:hover {
+    background-color: rgba(115, 104, 93, 0.3);
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
+
+@media all and (max-width: 768px) {
+
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    table {
+        position: relative;
+        padding-bottom: 0;
+        border: none;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    }
+
+    thead {
+        float: left;
+        white-space: nowrap;
+    }
+
+    tbody {
+        overflow-x: auto;
+        overflow-y: hidden;
+        position: relative;
+        white-space: nowrap;
+    }
+
+    tr {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    th {
+        border-bottom: 1px solid #a39485;
+    }
+
+    td {
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+}
+
+.teamInfo li {
+    width: 800px;
+    font-size: 16px;
+    color: grey;
+}
+
+#butnns {
+    position: absolute;
+    right: 180px;
+}
+
+#butnns a {
+    width: 140px;
+    padding: 8px 12px;
+    font-weight: 550;
+    text-align: center;
+    transition: all 0.2s;
+    color: #fff;
+    background-color: #73685d;
+}
+
+#butnns span {
+    width: 140px;
+    padding: 6.5px 10.5px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s;
+    color: #73685d;
+    background-color: #fff;
+    border: 2px solid #73685d;
+}
+
+#butnns > a,
+#butnns > span {
+    border-radius: 2px;
+}
+
+#butnns > a:first-child,
+#butnns > span:first-child {
+    border-radius: 5px 2px 2px 5px;
+}
+
+
+#butnns > a:last-child,
+#butnns > span:last-child {
+    border-radius: 2px 5px 5px 2px;
+}
+
+#butnns a:hover {
+    background-color: #524947;
+    font-weight: 550;
+}
+
+#board {
+    position: relative;
+    height: auto;
+    min-height: 100%;
+}
+
+.form-control {
+    border: 1px solid #e8e8e8;
+}
+
+/* write.html */
+#writeBtn > div button {
+    background-color: #ffb320;
+    border-color: #ffb320;
+    float: right;
+}
+
+.ui-datepicker th {
+    background: #eeeeee;
+    color: #333333;
+}

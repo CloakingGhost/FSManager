@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 10초마다 파일 변화를 체크하여 갱신시킨다. -->
+<configuration scan="true" scanPeriod="10 seconds">
+    <!-- spring.profile에 따른 설정파일 분기 -->
+    <springProfile name = "prod">
+        <property resource = "logback-prod.properties"/>
+    </springProfile>
+    <springProfile name = "dev">
+        <property resource = "logback-dev.properties"/>
+    </springProfile>
+    <!-- 루트 로그 레벨 -->
+    <property name ="LOG_LEVEL" value = "${log.config.level}"/>
+    <!-- 로그 파일 경로 -->
+    <property name ="LOG_PATH" value = "${log.config.path}"/>
+    <!-- 로그 파일 명 -->
+    <property name ="LOG_FILE_NAME" value = "${log.config.filename}"/>
+    <property name ="ERR_LOG_FILE_NAME" value = "${log.config.filename}_error"/>
+    <!-- 로그 파일 패턴 -->
+    <property name ="LOG_PATTERN" value = "%-5level %d{yyyy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n"/>
+    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>
+    <!-- 파일 Appender 설정 -->
+    <appender name="FILE" class ="ch.qos.logback.core.FileAppender">
+        <!-- 파일 경로 설정 -->
+        <file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>
+        <!-- 로그 패턴 설정 -->
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 콘솔 Appender 설정 -->
+    <appender name ="CONSOLE" class ="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 콘솔, 파일 출력 -->
+    <root level = "${LOG_LEVEL}">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <logger name="org.springframework" level = "INFO" additivity = "false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+</configuration>
